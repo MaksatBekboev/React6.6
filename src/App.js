@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 
-function App() {
+const Slider = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    fetch("./images.json")
+      .then(response => response.json())
+      .then(data => setImages(data))
+      .catch(error => console.log(error));
+  }, []);
+
+  const previousSlide = () => {
+    let slide = currentSlide - 1;
+    if (slide < 0) {
+      slide = images.length - 1;
+    }
+    setCurrentSlide(slide);
+  };
+
+  const nextSlide = () => {
+    let slide = currentSlide + 1;
+    if (slide >= images.length) {
+      slide = 0;
+    }
+    setCurrentSlide(slide);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="slider-container">
+      <img className="slider-image" src={images[currentSlide]?.url} alt={`Slide ${currentSlide + 1}`} />
+      <div className="slider-controls">
+        <button className="slider-button" onClick={previousSlide}>Назад</button>
+        <button className="slider-button" onClick={nextSlide}>Далее</button>
+      </div>
     </div>
   );
-}
+};
 
-export default App;
+export default Slider;
